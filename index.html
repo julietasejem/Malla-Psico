@@ -1,0 +1,121 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Malla Psicología UBA</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #ffe6ec, #fff0f5);
+      padding: 2rem;
+      color: #333;
+    }
+    h1 {
+      text-align: center;
+      color: #c9184a;
+    }
+    .malla {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .materia {
+      background-color: #fff;
+      border-left: 6px solid #ff4d6d;
+      border-radius: 12px;
+      padding: 1rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+      position: relative;
+      cursor: pointer;
+    }
+    .materia:hover {
+      transform: scale(1.02);
+    }
+    .materia.aprobada {
+      text-decoration: line-through;
+      background-color: #fcd5ce;
+      color: #555;
+    }
+    .materia.bloqueada {
+      opacity: 0.5;
+      pointer-events: none;
+    }
+    .nota-input {
+      display: block;
+      width: 60px;
+      margin-top: 8px;
+      padding: 4px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Malla Interactiva - Psicología UBA</h1>
+  <div class="malla" id="malla">
+    <div class="materia" data-id="biologia">Biología
+      <input class="nota-input" type="text" placeholder="Nota" />
+    </div>
+    <div class="materia" data-id="psicologia">Psicología
+      <input class="nota-input" type="text" placeholder="Nota" />
+    </div>
+    <div class="materia" data-id="semiologia">Semiología
+      <input class="nota-input" type="text" placeholder="Nota" />
+    </div>
+    <div class="materia" data-id="matematica">Matemática
+      <input class="nota-input" type="text" placeholder="Nota" />
+    </div>
+    <div class="materia" data-id="icse">Pensamiento Científico
+      <input class="nota-input" type="text" placeholder="Nota" />
+    </div>
+    <div class="materia" data-id="ipc">Sociedad y Estado
+      <input class="nota-input" type="text" placeholder="Nota" />
+    </div>
+    <div class="materia bloqueada" data-id="psico-general">Psicología General
+      <input class="nota-input" type="text" placeholder="Nota" disabled />
+    </div>
+    <div class="materia bloqueada" data-id="estadistica">Estadística
+      <input class="nota-input" type="text" placeholder="Nota" disabled />
+    </div>
+    <div class="materia bloqueada" data-id="psico-social">Psicología Social
+      <input class="nota-input" type="text" placeholder="Nota" disabled />
+    </div>
+  </div>
+  <script>
+    const CBC = ['biologia', 'psicologia', 'semiologia', 'matematica', 'icse', 'ipc'];
+    const CFG = ['psico-general', 'estadistica', 'psico-social'];
+
+    const materias = document.querySelectorAll('.materia');
+    materias.forEach(m => {
+      m.addEventListener('click', (e) => {
+        if (e.target.classList.contains('nota-input')) return;
+        const id = m.dataset.id;
+        if (!m.classList.contains('bloqueada')) {
+          m.classList.toggle('aprobada');
+          checkCBC();
+        }
+      });
+    });
+
+    function checkCBC() {
+      const aprobadasCBC = CBC.every(id => document.querySelector(`[data-id="${id}"]`).classList.contains('aprobada'));
+      CFG.forEach(id => {
+        const materia = document.querySelector(`[data-id="${id}"]`);
+        const input = materia.querySelector('.nota-input');
+        if (aprobadasCBC) {
+          materia.classList.remove('bloqueada');
+          input.disabled = false;
+        } else {
+          materia.classList.add('bloqueada');
+          input.disabled = true;
+        }
+      });
+    }
+  </script>
+</body>
+</html>
