@@ -116,6 +116,47 @@
         }
       });
     }
-  </script>
+  
+    // Guardar materias aprobadas y notas
+    function guardarEstado() {
+      const estado = {};
+      materias.forEach(m => {
+        const id = m.dataset.id;
+        estado[id] = {
+          aprobada: m.classList.contains('aprobada'),
+          nota: m.querySelector('.nota-input')?.value || ""
+        };
+      });
+      localStorage.setItem("mallaPsicoUBA", JSON.stringify(estado));
+    }
+
+    // Cargar estado guardado
+    function cargarEstado() {
+      const estado = JSON.parse(localStorage.getItem("mallaPsicoUBA") || "{}");
+      for (const id in estado) {
+        const materia = document.querySelector(`[data-id="${id}"]`);
+        if (materia) {
+          if (estado[id].aprobada) materia.classList.add('aprobada');
+          const input = materia.querySelector('.nota-input');
+          if (input) input.value = estado[id].nota;
+        }
+      }
+      checkCBC();
+    }
+
+    materias.forEach(m => {
+      const input = m.querySelector('.nota-input');
+      if (input) {
+        input.addEventListener('input', guardarEstado);
+      }
+    });
+
+    // Guardar cada vez que se aprueba una materia
+    materias.forEach(m => {
+      m.addEventListener('click', () => guardarEstado());
+    });
+
+    cargarEstado(); // al iniciar
+    
 </body>
 </html>
